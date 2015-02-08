@@ -5,7 +5,8 @@
 
 #include <msp430g2553.h>
 
-#define LED1    BIT0
+#define RED    	BIT0
+#define GREEN	BIT6
 #define AIN1    BIT1
 
 /*  Глобальные переменные  */
@@ -18,7 +19,7 @@ void main(void) {
         WDTCTL = WDTPW + WDTHOLD;       // отключаем сторожевой таймер
 
         P1OUT = 0;
-        P1DIR = LED1;                   // светодиод на P1.0
+        P1DIR = RED + GREEN;                   // enable launchpad red and green leds (p1.0 and p1.6)
 
 CACTL1 = CAREF1 + CARSEL + CAIE; // опорное напряжение 0.5 Vcc,
                                  // на инвертирующем  входе,
@@ -49,11 +50,13 @@ __interrupt void CCR0_ISR(void) {
 __interrupt void COMPA_ISR(void) {
   if ((CACTL2 & CAOUT)==0x01) {
     CACTL1 |= CAIES;    // значение высокое, ждем спадания фронта
-    flash = LED1;       // разрешаем светодиоду мигать
+    flash = RED;       // разрешаем светодиоду мигать
+    P1OUT = !GREEN;
+
   }
   else {
     CACTL1 &= ~CAIES;   // значение низкое, ждем возрастания фронта
     flash = 0;          // отключаем светодиод
-    P1OUT = 0;          // обнуляем выход порта P1
+    P1OUT = !RED + GREEN;          // обнуляем выход порта P1
   }
 } // COMPA_ISR
