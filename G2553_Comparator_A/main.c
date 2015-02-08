@@ -42,21 +42,23 @@ CAPD = AIN1;         // отключаем цифровой блок на P1.1 (технически
 
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void CCR0_ISR(void) {
-        P1OUT ^= flash;                 // если flash == 0, светодиод не горит
-                                        // если flash == LED1, мигаем светодиодом
+        P1OUT ^= flash;                 // if flash == 0, RED LED does not blink
+                                        // if flash == LED1, RED LED blink
 } // CCR0_ISR
 
 #pragma vector = COMPARATORA_VECTOR
 __interrupt void COMPA_ISR(void) {
   if ((CACTL2 & CAOUT)==0x01) {
-    CACTL1 |= CAIES;    // значение высокое, ждем спадания фронта
-    flash = RED;       // разрешаем светодиоду мигать
-    P1OUT = !GREEN;
+
+    flash = RED;       // enable blink
+    P1OUT &= ~GREEN;
+   // CACTL1 |= CAIES;    // reduntant step, use just for enable interrupts by falling/rising edge
 
   }
   else {
-    CACTL1 &= ~CAIES;   // значение низкое, ждем возрастания фронта
-    flash = 0;          // отключаем светодиод
-    P1OUT = !RED + GREEN;          // обнуляем выход порта P1
+
+    flash = 0;          // disable blink
+    P1OUT = GREEN;          // P1OUT to light GREEN
+   // CACTL1 &= ~CAIES;   // reduntant step, use just for enable interrupts by falling/rising edge
   }
 } // COMPA_ISR
