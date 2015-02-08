@@ -52,13 +52,13 @@ __interrupt void COMPA_ISR(void) {
 
     flash = RED;       // enable blink
     P1OUT &= ~GREEN;
-   // CACTL1 |= CAIES;    // reduntant step, use just for enable interrupts by falling/rising edge
+    CACTL1 |= CAIES;    // value high, so watch for falling edge
 
   }
   else {
 
     flash = 0;          // disable blink
     P1OUT = GREEN;          // P1OUT to light GREEN
-   // CACTL1 &= ~CAIES;   // reduntant step, use just for enable interrupts by falling/rising edge
+    CACTL1 &= ~CAIES;   // value low (CAOUT=1) , watch for rising edge
   }
 } // COMPA_ISR
