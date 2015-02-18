@@ -37,7 +37,7 @@ void main(void) {
     P1OUT = 0;
     P1DIR = 0xF;
 
-    TACTL = TASSEL_2 + ID_2 + MC_2; // Используем SMCLK, делитель 4, непрерывный режим
+    TACTL = TASSEL_2 + ID_2 + MC_2; // Use SMCLK, div 4, autoincrement mode
     TACCTL0 = CCIE;          // Прерывание по достижении TACCR0
     overflows = 0;
 
